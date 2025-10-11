@@ -1,0 +1,132 @@
+// Switch
+.config-switch {
+  width: 40px;
+  min-width: 40px;
+  background: var(--c-text-color-10);
+
+  &:hover:not(.ant-switch-disabled) {
+    background: var(--c-text-color-15);
+  }
+
+  .ant-switch-handle {
+    &:before {
+      box-shadow: none;
+    }
+  }
+
+  .ant-wave {
+    display: none;
+  }
+}
+
+// Slider
+.config-slider {
+  margin-top: 0;
+  margin-bottom: 0;
+
+  .ant-slider-rail {
+    background-color: var(--c-text-color-10);
+  }
+
+  .ant-slider-track {
+    background-color: #0d6efd;
+  }
+
+  .ant-slider-handle {
+    &:after {
+      box-shadow: 0 0 0 2px #0d6efd;
+    }
+  }
+
+  &:hover {
+    .ant-slider-track {
+      background-color: #0d6efd;
+    }
+
+    .ant-slider-rail {
+      background-color: var(--c-text-color-15);
+    }
+  }
+
+  &.ant-slider-disabled {
+    .ant-slider-rail {
+      background-color: var(--c-bg-color) !important;
+    }
+
+    .ant-slider-handle {
+      &:after {
+        outline: none;
+      }
+    }
+  }
+}
+
+.config-color-picker {
+  .ant-popover-content {
+    .ant-popover-inner {
+      background-color: var(--c-bg-color);
+
+      .ant-color-picker-panel {
+        .ant-color-picker-slider-container {
+          .ant-color-picker-color-block {
+            width: 20px;
+            height: 20px;
+          }
+        }
+      }
+
+      .ant-color-picker-input-container {
+        .ant-select {
+          .ant-select-selector {
+            color: var(--c-text-color);
+
+            .ant-select-dropdown {
+              background-color: var(--c-bg-color);
+
+              .rc-virtual-list {
+                .rc-virtual-list-holder {
+                  .rc-virtual-list-holder-inner {
+                    .ant-select-item {
+                      color: var(--c-text-color);
+
+                      &.ant-select-item-option-selected {
+                        color: var(--c-bg-color);
+                        background-color: var(--c-text-color);
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          .ant-select-arrow {
+            color: var(--c-text-color);
+          }
+        }
+
+        .ant-color-picker-input {
+          .ant-input-affix-wrapper {
+            padding-left: 4px;
+            color: var(--c-text-color-75);
+            background-color: var(--c-card-bg-color);
+            border-color: var(--c-text-color-35);
+            box-shadow: none;
+
+            &:hover {
+              border-color: var(--c-text-color-55);
+            }
+
+            &.ant-input-affix-wrapper-focused {
+              border-color: var(--c-text-color-75);
+            }
+
+            .ant-input-prefix {
+              color: var(--c-text-color-75);
+            }
+          }
+        }
+      }
+    }
+  }
+}

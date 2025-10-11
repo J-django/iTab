@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "iTab",
+  "version": "1.0.0",
+  "description": "每次新建标签页显示我的 React 页面",
+  "chrome_url_overrides": { "newtab": "index.html" },
+  "icons": {},
+  "host_permissions": ["https://www.baidu.com/*"],
+  "permissions": ["storage"]
+}

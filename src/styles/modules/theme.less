@@ -1,0 +1,56 @@
+.loop(@n, @i, @r) when (@i <= 100) {
+  @a: (@i / 100);
+  --c-@{n}-@{i}: rgba(var(@{r}), @a);
+  .loop(@n, (@i + 5), @r);
+}
+
+// Global
+:root {
+  // 字体
+  --c-text-color: rgba(var(--c-text-color-rgb), 1);
+  .loop(text-color,5,--c-text-color-rgb);
+
+  // 背景
+  --c-bg-color: rgba(var(--c-bg-color-rgb), 1);
+  .loop(bg-color,5,--c-bg-color-rgb);
+
+  // 卡片背景
+  --c-card-bg-color: rgba(var(--c-card-bg-color-rgb), 1);
+  .loop(card-bg-color,5,--c-card-bg-color-rgb);
+
+  // Tab背景
+  --c-tab-bg-color: rgba(var(--c-tab-bg-color-rgb), 1);
+  .loop(tab-bg-color,5,--c-tab-bg-color-rgb);
+
+  // 边框
+  --c-border-color: rgba(var(--c-border-color-rgb), 1);
+  .loop(border-color,5,--c-border-color-rgb);
+}
+
+// Light
+html[data-theme="light"] {
+  // 字体
+  --c-text-color-rgb: 60, 60, 67;
+
+  // 背景
+  --c-bg-color-rgb: 255, 255, 255;
+  --c-card-bg-color-rgb: 250, 250, 250;
+  --c-tab-bg-color-rgb: 232, 232, 232;
+
+  // 边框
+  --c-border-color-rgb: 238, 238, 238;
+}
+
+// Dark
+html[data-theme="dark"] {
+  // 字体
+  --c-text-color-rgb: 235, 235, 225;
+
+  // 背景
+  --c-bg-color-rgb: 30, 30, 32;
+  --c-card-bg-color-rgb: 24, 24, 26;
+  --c-tab-bg-color-rgb: 54, 54, 54;
+
+  // 边框
+  --c-border-color-rgb: 38, 43, 43;
+}
