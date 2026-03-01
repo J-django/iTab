@@ -16,6 +16,7 @@ const RGL = WidthProvider(GridLayout);
 const Sidebar = () => {
   // Ref
   const isFirstRender = useRef(true);
+  const dragStartPos = useRef<{ x: number; y: number } | null>(null);
 
   // State
   const [checkNav, setCheckNav] = useState("");
@@ -28,14 +29,40 @@ const Sidebar = () => {
   const placement = getSidebar()?.placement;
 
   // Func
-  function handleDragStart() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleNavClick = (navId: string) => {
+    // 如果正在拖拽，不触发点击
+    if (isDragging) return;
+    setCheckNav(navId);
+    bus.emit("NAV_CHANGE", navId);
+  };
+
+  function handleDragStart(e: any) {
+    // 记录拖拽开始位置
+    dragStartPos.current = { x: e.clientX, y: e.clientY };
     setIsDragging(true);
   }
 
-  function handleDragStop() {
-    if (isDragging) {
-      setTimeout(() => setIsDragging(false), 0);
+  function handleDragStop(e: any) {
+    // 计算拖拽距离
+    if (dragStartPos.current && e) {
+      const deltaX = Math.abs(e.clientX - dragStartPos.current.x);
+      const deltaY = Math.abs(e.clientY - dragStartPos.current.y);
+      const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+      
+      // 如果拖拽距离很小（小于 5 像素），视为点击，不触发拖拽
+      if (distance < 5) {
+        setIsDragging(false);
+        dragStartPos.current = null;
+        return;
+      }
     }
+    
+    // 拖拽结束，重置状态
+    setTimeout(() => {
+      setIsDragging(false);
+      dragStartPos.current = null;
+    }, 0);
   }
 
   useEffect(() => {
@@ -125,8 +152,8 @@ const Sidebar = () => {
                                     checkNav === nav.id,
                                 },
                               )}
-                              title={nav.name}
-                              onClick={() => setCheckNav(nav.id)}
+                              title={`${nav.name} - 点击切换，拖动调整顺序`}
+                              onClick={() => handleNavClick(nav.id)}
                               onContextMenu={(e) => e.preventDefault()}
                             >
                               <div
