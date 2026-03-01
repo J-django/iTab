@@ -1,5 +1,5 @@
-import { useRef, useState, useEffect } from "react";
-import GridLayout, { WidthProvider } from "react-grid-layout";
+import { useState, useEffect } from "react";
+import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import { SettingNav } from "@/components/_components/setting-nav";
 import { Image } from "@/components/image";
 import { AnimatePresence, motion } from "framer-motion";
@@ -10,14 +10,8 @@ import { clsx } from "clsx";
 
 import type { Nav } from "@/types";
 
-const RGL = WidthProvider(GridLayout);
-
 // 侧边栏
 const Sidebar = () => {
-  // Ref
-  const isFirstRender = useRef(true);
-  const dragStartPos = useRef<{ x: number; y: number } | null>(null);
-
   // State
   const [checkNav, setCheckNav] = useState("");
   const [isDragging, setIsDragging] = useState(false);
@@ -29,7 +23,6 @@ const Sidebar = () => {
   const placement = getSidebar()?.placement;
 
   // Func
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleNavClick = (navId: string) => {
     // 如果正在拖拽，不触发点击
     if (isDragging) return;
@@ -37,38 +30,38 @@ const Sidebar = () => {
     bus.emit("NAV_CHANGE", navId);
   };
 
-  function handleDragStart(e: any) {
-    // 记录拖拽开始位置
-    dragStartPos.current = { x: e.clientX, y: e.clientY };
+  const handleDragStart = () => {
     setIsDragging(true);
-  }
+  };
 
-  function handleDragStop(e: any) {
-    // 计算拖拽距离
-    if (dragStartPos.current && e) {
-      const deltaX = Math.abs(e.clientX - dragStartPos.current.x);
-      const deltaY = Math.abs(e.clientY - dragStartPos.current.y);
-      const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-      
-      // 如果拖拽距离很小（小于 5 像素），视为点击，不触发拖拽
-      if (distance < 5) {
-        setIsDragging(false);
-        dragStartPos.current = null;
-        return;
-      }
-    }
-    
-    // 拖拽结束，重置状态
-    setTimeout(() => {
+  const handleDragEnd = (result: DropResult) => {
+    // 如果没有拖拽到有效位置，直接返回
+    if (!result.destination) {
       setIsDragging(false);
-      dragStartPos.current = null;
-    }, 0);
-  }
+      return;
+    }
+
+    // 如果拖拽位置没有变化，直接返回
+    if (result.source.index === result.destination.index) {
+      setIsDragging(false);
+      return;
+    }
+
+    // 重新排序
+    const ordered = Array.from(navs);
+    const [removed] = ordered.splice(result.source.index, 1);
+    ordered.splice(result.destination.index, 0, removed);
+    setNavs(ordered);
+    
+    // 延迟重置拖拽状态，让点击事件先执行
+    setTimeout(() => setIsDragging(false), 0);
+  };
 
   useEffect(() => {
-    isFirstRender.current = false;
-    setCheckNav(navs?.[0]?.id);
-  }, []);
+    if (navs?.[0]?.id) {
+      setCheckNav(navs[0].id);
+    }
+  }, [navs]);
 
   return (
     <AnimatePresence>
@@ -111,67 +104,62 @@ const Sidebar = () => {
                   )}
                 >
                   <ul className="m-0 p-0 list-none text-#ffffff/60">
-                    {/*Nav列表*/}
-                    <AnimatePresence>
-                      <RGL
-                        className="sidebar-grid-layout"
-                        layout={navs.map((nav, i) => ({
-                          i: String(nav.id),
-                          x: 0,
-                          y: i,
-                          w: 1,
-                          h: 1,
-                        }))}
-                        cols={1}
-                        rowHeight={50}
-                        width={50}
-                        margin={[0, 0]}
-                        containerPadding={[0, 0]}
-                        isResizable={false}
-                        isBounded={true}
-                        onDragStart={handleDragStart}
-                        onDragStop={handleDragStop}
-                        onLayoutChange={(newLayout) => {
-                          const ordered = newLayout
-                            .sort((a, b) => (a.y ?? 0) - (b.y ?? 0))
-                            .map((l) => navs.find((n) => String(n.id) === l.i)!)
-                            .filter(Boolean);
-                          setNavs(ordered);
-                        }}
-                      >
-                        {navs?.map((nav: Nav) => (
-                          <li
-                            key={nav.id}
-                            className="w-12.5! overflow-hidden pointer-events-none transition-[top]"
-                          >
-                            <div
-                              className={clsx(
-                                "parent shrink-0 space-y-0.25 w-full h-12.5 flex flex-col items-center justify-center cursor-pointer pointer-events-auto transition-colors duration-250",
-                                {
-                                  "text-#dfdfd7 bg-#ffffff/15":
-                                    checkNav === nav.id,
-                                },
-                              )}
-                              title={`${nav.name} - 点击切换，拖动调整顺序`}
-                              onClick={() => handleNavClick(nav.id)}
-                              onContextMenu={(e) => e.preventDefault()}
-                            >
-                              <div
-                                className={clsx(
-                                  "shrink-0 w-5.5 h-5.5 parent-hover:scale-120 transition-transform duration-250",
-                                  nav.icon,
+                    {/*Nav 列表*/}
+                    <DragDropContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+                      <Droppable droppableId="nav-list">
+                        {(provided) => (
+                          <div ref={provided.innerRef} {...provided.droppableProps}>
+                            {navs?.map((nav: Nav, index: number) => (
+                              <Draggable key={nav.id} draggableId={String(nav.id)} index={index}>
+                                {(provided, snapshot) => (
+                                  <li
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    style={{
+                                      ...provided.draggableProps.style,
+                                    }}
+                                    className={clsx(
+                                      "w-12.5! overflow-hidden transition-all",
+                                      snapshot.isDragging && "opacity-50",
+                                    )}
+                                  >
+                                    <div
+                                      className={clsx(
+                                        "parent shrink-0 space-y-0.25 w-full h-12.5 flex flex-col items-center justify-center cursor-pointer transition-colors duration-250 cursor-grab active:cursor-grabbing",
+                                        {
+                                          "text-#dfdfd7 bg-#ffffff/15":
+                                            checkNav === nav.id,
+                                        },
+                                      )}
+                                      title={`${nav.name} - 点击切换，拖动调整顺序`}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleNavClick(nav.id);
+                                      }}
+                                      onContextMenu={(e) => e.preventDefault()}
+                                    >
+                                      <div
+                                        className={clsx(
+                                          "shrink-0 w-5.5 h-5.5 parent-hover:scale-120 transition-transform duration-250 pointer-events-none",
+                                          nav.icon,
+                                        )}
+                                      />
+                                      <span className="text-2.75 max-w-full leading-normal select-none truncate pointer-events-none">
+                                        {nav.name}
+                                      </span>
+                                    </div>
+                                  </li>
                                 )}
-                              />
-                              <span className="text-2.75 max-w-full leading-normal select-none truncate">
-                                {nav.name}
-                              </span>
-                            </div>
-                          </li>
-                        ))}
-                      </RGL>
-                    </AnimatePresence>
+                              </Draggable>
+                            ))}
+                            {provided.placeholder}
+                          </div>
+                        )}
+                      </Droppable>
+                    </DragDropContext>
 
-                    {/*新增Nav分组*/}
+                    {/*新增 Nav 分组*/}
                     <SettingNav trigger="click" placement="right" onOk={addNav}>
                       <li
                         className="parent h-12.5 flex flex-col items-center justify-center cursor-pointer"
