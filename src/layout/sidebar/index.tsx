@@ -1,5 +1,12 @@
 import { useState, useEffect } from "react";
-import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DropResult,
+} from "@hello-pangea/dnd";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { KeyboardSensor, PointerSensor } from "@hello-pangea/dnd";
 import { SettingNav } from "@/components/_components/setting-nav";
 import { Image } from "@/components/image";
 import { AnimatePresence, motion } from "framer-motion";
@@ -30,6 +37,18 @@ const Sidebar = () => {
     bus.emit("NAV_CHANGE", navId);
   };
 
+  // 拖拽传感器配置 - 限制只能垂直拖拽
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      // 激活拖拽的距离阈值
+      activationConstraint: {
+        distance: 5,
+      },
+    }),
+    useSensor(KeyboardSensor, {}),
+  );
+
   const handleDragStart = () => {
     setIsDragging(true);
   };
@@ -52,9 +71,9 @@ const Sidebar = () => {
     const [removed] = ordered.splice(result.source.index, 1);
     ordered.splice(result.destination.index, 0, removed);
     setNavs(ordered);
-    
-    // 延迟重置拖拽状态，让点击事件先执行
-    setTimeout(() => setIsDragging(false), 0);
+
+    // 重置拖拽状态，不触发选中
+    setIsDragging(false);
   };
 
   useEffect(() => {
@@ -105,12 +124,23 @@ const Sidebar = () => {
                 >
                   <ul className="m-0 p-0 list-none text-#ffffff/60">
                     {/*Nav 列表*/}
-                    <DragDropContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-                      <Droppable droppableId="nav-list">
+                    <DragDropContext
+                      sensors={sensors}
+                      onDragStart={handleDragStart}
+                      onDragEnd={handleDragEnd}
+                    >
+                      <Droppable droppableId="nav-list" direction="vertical">
                         {(provided) => (
-                          <div ref={provided.innerRef} {...provided.droppableProps}>
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.droppableProps}
+                          >
                             {navs?.map((nav: Nav, index: number) => (
-                              <Draggable key={nav.id} draggableId={String(nav.id)} index={index}>
+                              <Draggable
+                                key={nav.id}
+                                draggableId={String(nav.id)}
+                                index={index}
+                              >
                                 {(provided, snapshot) => (
                                   <li
                                     ref={provided.innerRef}
