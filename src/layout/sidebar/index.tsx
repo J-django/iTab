@@ -4,9 +4,11 @@ import {
   Droppable,
   Draggable,
   DropResult,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
 } from "@hello-pangea/dnd";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { KeyboardSensor, PointerSensor } from "@hello-pangea/dnd";
 import { SettingNav } from "@/components/_components/setting-nav";
 import { Image } from "@/components/image";
 import { AnimatePresence, motion } from "framer-motion";
@@ -38,7 +40,6 @@ const Sidebar = () => {
   };
 
   // 拖拽传感器配置 - 限制只能垂直拖拽
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const sensors = useSensors(
     useSensor(PointerSensor, {
       // 激活拖拽的距离阈值
