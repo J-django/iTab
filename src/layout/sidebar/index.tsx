@@ -4,10 +4,6 @@ import {
   Droppable,
   Draggable,
   DropResult,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
 } from "@hello-pangea/dnd";
 import { SettingNav } from "@/components/_components/setting-nav";
 import { Image } from "@/components/image";
@@ -39,17 +35,6 @@ const Sidebar = () => {
     bus.emit("NAV_CHANGE", navId);
   };
 
-  // 拖拽传感器配置 - 限制只能垂直拖拽
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      // 激活拖拽的距离阈值
-      activationConstraint: {
-        distance: 5,
-      },
-    }),
-    useSensor(KeyboardSensor, {}),
-  );
-
   const handleDragStart = () => {
     setIsDragging(true);
   };
@@ -67,21 +52,27 @@ const Sidebar = () => {
       return;
     }
 
+    // 保存拖拽前的选中状态
+    const previousCheckNav = checkNav;
+
     // 重新排序
     const ordered = Array.from(navs);
     const [removed] = ordered.splice(result.source.index, 1);
     ordered.splice(result.destination.index, 0, removed);
     setNavs(ordered);
 
-    // 重置拖拽状态，不触发选中
+    // 恢复拖拽前的选中状态，不因为拖拽而改变选中
+    setCheckNav(previousCheckNav);
     setIsDragging(false);
   };
 
+  // 只在初始化时设置默认选中，不在 navs 变化时重置
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    if (navs?.[0]?.id) {
+    if (!checkNav && navs?.[0]?.id) {
       setCheckNav(navs[0].id);
     }
-  }, [navs]);
+  }, []);
 
   return (
     <AnimatePresence>
@@ -111,7 +102,7 @@ const Sidebar = () => {
               </div>
 
               {/*Nav*/}
-              <div className="w-full flex-auto">
+              <div className="w-full flex-auto flex flex-col">
                 <Scrollbars
                   width="100%"
                   height="100%"
@@ -126,7 +117,6 @@ const Sidebar = () => {
                   <ul className="m-0 p-0 list-none text-#ffffff/60">
                     {/*Nav 列表*/}
                     <DragDropContext
-                      sensors={sensors}
                       onDragStart={handleDragStart}
                       onDragEnd={handleDragEnd}
                     >
@@ -146,29 +136,45 @@ const Sidebar = () => {
                                   <li
                                     ref={provided.innerRef}
                                     {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
                                     style={{
                                       ...provided.draggableProps.style,
+                                      // 拖拽时只允许纵向位移，锁定横向位置
+                                      transform:
+                                        snapshot.isDragging &&
+                                        provided.draggableProps.style?.transform
+                                          ? provided.draggableProps.style.transform.replace(
+                                              /translate3d\(([^,]+),/,
+                                              "translate3d(0,",
+                                            )
+                                          : provided.draggableProps.style
+                                              ?.transform,
                                     }}
                                     className={clsx(
-                                      "w-12.5! overflow-hidden transition-all",
-                                      snapshot.isDragging && "opacity-50",
+                                      "w-12.5! overflow-hidden",
+                                      snapshot.isDragging && "opacity-80",
                                     )}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleNavClick(nav.id);
+                                    }}
+                                    onContextMenu={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                    }}
                                   >
                                     <div
+                                      {...provided.dragHandleProps}
                                       className={clsx(
-                                        "parent shrink-0 space-y-0.25 w-full h-12.5 flex flex-col items-center justify-center cursor-pointer transition-colors duration-250 cursor-grab active:cursor-grabbing",
+                                        "parent shrink-0 space-y-0.25 w-full h-12.5 flex flex-col items-center justify-center cursor-grab active:cursor-grabbing transition-all duration-250 border-2 border-transparent",
+                                        snapshot.isDragging &&
+                                          "bg-[var(--c-bg-color-25)] border-dashed border-white/50 shadow-lg scale-105",
                                         {
                                           "text-#dfdfd7 bg-#ffffff/15":
-                                            checkNav === nav.id,
+                                            checkNav === nav.id &&
+                                            !snapshot.isDragging,
                                         },
                                       )}
                                       title={`${nav.name} - 点击切换，拖动调整顺序`}
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleNavClick(nav.id);
-                                      }}
-                                      onContextMenu={(e) => e.preventDefault()}
                                     >
                                       <div
                                         className={clsx(
@@ -189,18 +195,18 @@ const Sidebar = () => {
                         )}
                       </Droppable>
                     </DragDropContext>
-
-                    {/*新增 Nav 分组*/}
-                    <SettingNav trigger="click" placement="right" onOk={addNav}>
-                      <li
-                        className="parent h-12.5 flex flex-col items-center justify-center cursor-pointer"
-                        title="新增"
-                      >
-                        <div className="i-material-symbols:add-rounded shrink-0 w-6.5 h-6.5 parent-hover:scale-120 transition-transform duration-250"></div>
-                      </li>
-                    </SettingNav>
                   </ul>
                 </Scrollbars>
+
+                {/*新增 Nav 分组 - 放在滚动条外面*/}
+                <SettingNav trigger="click" placement="right" onOk={addNav}>
+                  <li
+                    className="parent h-12.5 flex flex-col items-center justify-center cursor-pointer text-#ffffff/60 hover:text-#ffffff transition-colors duration-250"
+                    title="新增"
+                  >
+                    <div className="i-material-symbols:add-rounded shrink-0 w-6.5 h-6.5 parent-hover:scale-120 transition-transform duration-250"></div>
+                  </li>
+                </SettingNav>
               </div>
 
               {/*设置*/}
