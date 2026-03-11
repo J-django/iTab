@@ -195,18 +195,18 @@ const Sidebar = () => {
                         )}
                       </Droppable>
                     </DragDropContext>
+
+                    {/*新增 Nav 分组 - 放在滚动条外面*/}
+                    <SettingNav trigger="click" placement="right" onOk={addNav}>
+                      <li
+                        className="parent h-12.5 flex flex-col items-center justify-center cursor-pointer text-#ffffff/60 hover:text-#ffffff transition-colors duration-250"
+                        title="新增"
+                      >
+                        <div className="i-material-symbols:add-rounded shrink-0 w-6.5 h-6.5 parent-hover:scale-120 transition-transform duration-250"></div>
+                      </li>
+                    </SettingNav>
                   </ul>
                 </Scrollbars>
-
-                {/*新增 Nav 分组 - 放在滚动条外面*/}
-                <SettingNav trigger="click" placement="right" onOk={addNav}>
-                  <li
-                    className="parent h-12.5 flex flex-col items-center justify-center cursor-pointer text-#ffffff/60 hover:text-#ffffff transition-colors duration-250"
-                    title="新增"
-                  >
-                    <div className="i-material-symbols:add-rounded shrink-0 w-6.5 h-6.5 parent-hover:scale-120 transition-transform duration-250"></div>
-                  </li>
-                </SettingNav>
               </div>
 
               {/*设置*/}
