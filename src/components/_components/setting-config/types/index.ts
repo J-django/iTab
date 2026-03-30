@@ -3,6 +3,7 @@ import type { JSX, LazyExoticComponent, ComponentType } from "react";
 export enum ComponentEnum {
   About = "About",
   Clock = "Clock",
+  Data = "Data",
   Layout = "Layout",
   Reset = "Reset",
   Search = "Search",

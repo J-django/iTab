@@ -31,6 +31,11 @@ export const settingTabs: SettingTab[] = [
     icon: <div className="i-tabler:layout-sidebar w-5 h-5"></div>,
   },
   {
+    name: ComponentEnum.Data,
+    title: "数据中心",
+    icon: <div className="i-tabler:database-cog w-5 h-5"></div>,
+  },
+  {
     name: ComponentEnum.Reset,
     title: "重置设置",
     icon: <div className="i-mingcute:refresh-2-line w-5 h-5"></div>,
@@ -55,11 +60,14 @@ export function lazyWithDelay<T extends ComponentType<any>>(
 }
 
 export const settingComponents: ComponentMap = {
-  [ComponentEnum.About]: lazy(() => import("../components/about")),
-  [ComponentEnum.Clock]: lazy(() => import("../components/clock")),
-  [ComponentEnum.Layout]: lazy(() => import("../components/layout")),
-  [ComponentEnum.Reset]: lazy(() => import("../components/reset")),
-  [ComponentEnum.Search]: lazy(() => import("../components/search")),
-  [ComponentEnum.Theme]: lazy(() => import("../components/theme")),
-  [ComponentEnum.Wallpaper]: lazy(() => import("../components/wallpaper")),
+  [ComponentEnum.About]: lazy(() => import("../components/about/index")),
+  [ComponentEnum.Clock]: lazy(() => import("../components/clock/index")),
+  [ComponentEnum.Data]: lazy(() => import("../components/data/index")),
+  [ComponentEnum.Layout]: lazy(() => import("../components/layout/index")),
+  [ComponentEnum.Reset]: lazy(() => import("../components/reset/index")),
+  [ComponentEnum.Search]: lazy(() => import("../components/search/index")),
+  [ComponentEnum.Theme]: lazy(() => import("../components/theme/index")),
+  [ComponentEnum.Wallpaper]: lazy(
+    () => import("../components/wallpaper/index"),
+  ),
 };

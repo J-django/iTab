@@ -1,6 +1,6 @@
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useCallback } from "react";
 import Modal from "@/components/modal";
-import Loading from "../components/loading";
+import Loading from "../components/loading/index";
 import { Scrollbars } from "react-custom-scrollbars-2";
 import { AnimatePresence, motion } from "framer-motion";
 import { settingTabs, settingComponents } from "../constant";
@@ -15,30 +15,30 @@ export const SettingConfig = () => {
   const [tab, setTab] = useState(settingTabs[0].name);
 
   // Func
-  function open() {
+  const resetTab = useCallback(() => {
+    setTab(settingTabs[0].name);
+  }, []);
+
+  const open = useCallback(() => {
     resetTab();
     setVisible(true);
-  }
+  }, [resetTab]);
 
-  function close() {
+  const close = useCallback(() => {
     setVisible(false);
-  }
-
-  function resetTab() {
-    setTab(settingTabs[0].name);
-  }
+  }, []);
 
   useEffect(() => {
     bus.on("OPEN_SETTING", open);
 
-    return () => bus.off("OPEN_SETTING", close);
-  }, []);
+    return () => bus.off("OPEN_SETTING", open);
+  }, [open]);
 
   useEffect(() => {
-    bus.on("CLOSE_SETTING", open);
+    bus.on("CLOSE_SETTING", close);
 
     return () => bus.off("CLOSE_SETTING", close);
-  }, []);
+  }, [close]);
 
   return (
     <Modal
@@ -84,9 +84,41 @@ export const SettingConfig = () => {
             </Scrollbars>
           </div>
           <div className="p-1 w-full bg-[var(--c-card-bg-color)] rounded-2.5 transition-[background-color]">
+            {/*position: absolute; width: 6px; right: 2px; bottom: 2px; top: 2px; border-radius: 3px;*/}
             <Scrollbars
               width="100%"
               height="100%"
+              renderTrackHorizontal={({ style, ...props }) => (
+                <div
+                  {...props}
+                  style={{
+                    ...style,
+                    right: 2,
+                    bottom: 0,
+                    left: 2,
+                    borderRadius: 3,
+                  }}
+                />
+              )}
+              renderTrackVertical={({ style, ...props }) => (
+                <div
+                  {...props}
+                  style={{
+                    ...style,
+                    right: 0,
+                    bottom: 2,
+                    top: 2,
+                    borderRadius: 3,
+                  }}
+                />
+              )}
+              renderThumbHorizontal={({ style, ...props }) => (
+                <div
+                  {...props}
+                  style={{ ...style }}
+                  className="bg-[var(--c-text-color-35)] hover:bg-[var(--c-text-color-45)] rounded-full transition-[background-color] duration-250 z-5"
+                />
+              )}
               renderThumbVertical={({ style, ...props }) => (
                 <div
                   {...props}
@@ -107,7 +139,7 @@ export const SettingConfig = () => {
                       exit={{ opacity: 0, y: -5 }}
                       transition={{ duration: 0.15 }}
                     >
-                      <div className="px-2">
+                      <div className="px-2.5">
                         <Suspense fallback={<Loading />}>
                           <Comp />
                         </Suspense>

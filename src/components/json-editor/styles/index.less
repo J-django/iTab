@@ -1,0 +1,190 @@
+.json-editor-shell {
+  --jse-theme-color: #0d6efd;
+  --jse-theme-color-highlight: #2b7dff;
+  --jse-background-color: var(--c-bg-color-75);
+  --jse-text-color: var(--c-text-color);
+  --jse-text-color-inverse: var(--c-bg-color);
+  --jse-main-border: 1px solid var(--c-border-color);
+  --jse-menu-color: var(--c-text-color);
+  --jse-modal-background: var(--c-card-bg-color);
+  --jse-modal-overlay-background: rgba(0, 0, 0, 0.35);
+  --jse-modal-code-background: var(--c-card-bg-color);
+  --jse-tooltip-color: var(--c-text-color);
+  --jse-tooltip-background: var(--c-card-bg-color);
+  --jse-tooltip-border: 1px solid var(--c-border-color);
+  --jse-tooltip-action-button-color: var(--c-text-color);
+  --jse-tooltip-action-button-background: var(--c-text-color-10);
+  --jse-panel-background: var(--c-bg-color-15);
+  --jse-panel-background-border: 1px solid var(--c-border-color);
+  --jse-panel-color: var(--c-text-color);
+  --jse-panel-color-readonly: var(--c-text-color-45);
+  --jse-panel-border: 1px solid var(--c-border-color);
+  --jse-panel-button-color-highlight: var(--c-text-color);
+  --jse-panel-button-background-highlight: var(--c-text-color-10);
+  --jse-navigation-bar-background: var(--c-bg-color-15);
+  --jse-navigation-bar-background-highlight: var(--c-text-color-10);
+  --jse-navigation-bar-dropdown-color: var(--c-text-color);
+  --jse-context-menu-background: var(--c-card-bg-color);
+  --jse-context-menu-background-highlight: var(--c-text-color-10);
+  --jse-context-menu-separator-color: var(--c-border-color);
+  --jse-context-menu-color: var(--c-text-color);
+  --jse-context-menu-pointer-background: var(--c-text-color-15);
+  --jse-context-menu-pointer-background-highlight: var(--c-text-color-20);
+  --jse-context-menu-pointer-color: var(--c-text-color);
+  --jse-key-color: #b45309;
+  --jse-value-color: var(--c-text-color);
+  --jse-value-color-number: #1d4ed8;
+  --jse-value-color-boolean: #0f766e;
+  --jse-value-color-null: #b91c1c;
+  --jse-value-color-string: #15803d;
+  --jse-value-color-url: #15803d;
+  --jse-delimiter-color: var(--c-text-color-45);
+  --jse-edit-outline: 2px solid var(--c-text-color-20);
+  --jse-selection-background-color: var(--c-text-color-10);
+  --jse-selection-background-inactive-color: var(--c-text-color-5);
+  --jse-hover-background-color: var(--c-text-color-5);
+  --jse-active-line-background-color: var(--c-text-color-5);
+  --jse-search-match-background-color: rgba(255, 204, 0, 0.15);
+  --jse-collapsed-items-background-color: var(--c-bg-color-15);
+  --jse-collapsed-items-selected-background-color: var(--c-text-color-10);
+  --jse-collapsed-items-link-color: var(--c-text-color-60);
+  --jse-collapsed-items-link-color-highlight: var(--c-text-color);
+  --jse-search-match-color: rgba(255, 204, 0, 0.25);
+  --jse-search-match-outline: 1px solid rgba(255, 204, 0, 0.35);
+  --jse-search-match-active-color: rgba(255, 153, 0, 0.3);
+  --jse-search-match-active-outline: 1px solid rgba(255, 153, 0, 0.4);
+  --jse-tag-background: var(--c-text-color-10);
+  --jse-tag-color: var(--c-text-color-60);
+  --jse-table-header-background: var(--c-bg-color-15);
+  --jse-table-header-background-highlight: var(--c-text-color-10);
+  --jse-table-row-odd-background: var(--c-text-color-5);
+  --jse-input-background: var(--c-card-bg-color);
+  --jse-input-border: 1px solid var(--c-border-color);
+  --jse-button-background: var(--c-text-color-10);
+  --jse-button-background-highlight: var(--c-text-color-15);
+  --jse-button-color: var(--c-text-color);
+  --jse-button-secondary-background: var(--c-bg-color-15);
+  --jse-button-secondary-background-highlight: var(--c-text-color-10);
+  --jse-button-secondary-background-disabled: var(--c-text-color-5);
+  --jse-button-secondary-color: var(--c-text-color);
+  --jse-a-color: #0d6efd;
+  --jse-a-color-highlight: #2b7dff;
+  --jse-svelte-select-background: var(--c-card-bg-color);
+  --jse-svelte-select-border: 1px solid var(--c-border-color);
+  --list-background: var(--c-card-bg-color);
+  --item-hover-bg: var(--c-text-color-10);
+  --multi-item-bg: var(--c-text-color-10);
+  --input-color: var(--c-text-color);
+  --multi-clear-bg: var(--c-text-color-20);
+  --multi-item-clear-icon-color: var(--c-text-color);
+  --multi-item-outline: 1px solid var(--c-border-color);
+  --list-shadow: 0 10px 30px rgba(0, 0, 0, 0.14);
+  --jse-color-picker-background: var(--c-card-bg-color);
+  --jse-color-picker-border-box-shadow: var(--c-border-color) 0 0 0 1px;
+
+  position: relative;
+
+  &.is-dark {
+    --jse-key-color: #fbbf24;
+    --jse-value-color-number: #93c5fd;
+    --jse-value-color-boolean: #5eead4;
+    --jse-value-color-null: #fca5a5;
+    --jse-value-color-string: #86efac;
+  }
+
+  .json-editor-surface {
+    position: relative;
+    min-height: 288px;
+    overflow: hidden;
+    border-radius: 10px;
+    background: var(--c-bg-color-25);
+  }
+
+  .json-editor-host {
+    width: 100%;
+    min-height: 288px;
+  }
+
+  .json-editor-placeholder {
+    position: absolute;
+    top: 6px;
+    left: 14px;
+    z-index: 1;
+    pointer-events: none;
+    font-size: 13px;
+    color: var(--c-text-color-35);
+  }
+
+  &.has-line-numbers {
+    .json-editor-placeholder {
+      left: 60px;
+    }
+  }
+
+  .jse-main {
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    font-family:
+      ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas,
+      "Liberation Mono", monospace;
+
+    .jse-text-mode {
+      border: none;
+    }
+  }
+
+  .jse-contents {
+    border: none !important;
+  }
+
+  .jse-contents,
+  .cm-editor,
+  .cm-scroller {
+    background: transparent;
+  }
+
+  .jse-status-bar,
+  .jse-navigation-bar {
+    border-color: var(--c-border-color);
+  }
+
+  .jse-navigation-bar {
+    border-bottom: 1px solid var(--c-border-color);
+  }
+
+  .jse-contents,
+  .cm-content,
+  .cm-line {
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .cm-editor {
+    min-height: 288px;
+  }
+
+  .cm-scroller {
+    scrollbar-width: thin;
+    scrollbar-color: var(--c-text-color-35) transparent;
+  }
+
+  .cm-scroller::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .cm-scroller::-webkit-scrollbar-thumb {
+    background: var(--c-text-color-35);
+    border-radius: 999px;
+  }
+
+  .cm-scroller::-webkit-scrollbar-thumb:hover {
+    background: var(--c-text-color-45);
+  }
+
+  .cm-gutters {
+    background: var(--c-bg-color-15);
+    border-right: 1px solid var(--c-border-color);
+  }
+}
