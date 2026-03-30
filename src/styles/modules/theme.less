@@ -25,6 +25,21 @@
   // 边框
   --c-border-color: rgba(var(--c-border-color-rgb), 1);
   .loop(border-color,5,--c-border-color-rgb);
+
+  // 玻璃
+  --c-glass-bg-rgb: var(--c-bg-color-rgb);
+  --c-glass-bg-strength: 0.58;
+  --c-glass-svg-edge-strong: rgba(255, 255, 255, 0.35);
+  --c-glass-svg-edge-soft: rgba(255, 255, 255, 0.14);
+  --c-glass-shadow: rgba(17, 17, 26, 0.08);
+  --c-glass-fallback-bg: rgba(var(--c-bg-color-rgb), 0.24);
+  --c-glass-fallback-border: rgba(255, 255, 255, 0.3);
+  --c-glass-fallback-shadow-strong: rgba(31, 38, 135, 0.2);
+  --c-glass-fallback-shadow-soft: rgba(31, 38, 135, 0.1);
+  --c-glass-fallback-highlight: rgba(255, 255, 255, 0.4);
+  --c-glass-fallback-lowlight: rgba(255, 255, 255, 0.2);
+  --c-glass-fallback-overlay: rgba(255, 255, 255, 0.15);
+  --c-glass-focus-color: #007aff;
 }
 
 // Light
@@ -39,6 +54,21 @@ html[data-theme="light"] {
 
   // 边框
   --c-border-color-rgb: 238, 238, 238;
+
+  // 玻璃
+  --c-glass-bg-rgb: 255, 255, 255;
+  --c-glass-bg-strength: 0.58;
+  --c-glass-svg-edge-strong: rgba(255, 255, 255, 0.2);
+  --c-glass-svg-edge-soft: rgba(255, 255, 255, 0.06);
+  --c-glass-shadow: rgba(17, 17, 26, 0.06);
+  --c-glass-fallback-bg: rgba(255, 255, 255, 0.12);
+  --c-glass-fallback-border: rgba(255, 255, 255, 0.08);
+  --c-glass-fallback-shadow-strong: rgba(31, 38, 135, 0.12);
+  --c-glass-fallback-shadow-soft: rgba(31, 38, 135, 0.06);
+  --c-glass-fallback-highlight: rgba(255, 255, 255, 0.16);
+  --c-glass-fallback-lowlight: rgba(255, 255, 255, 0.05);
+  --c-glass-fallback-overlay: rgba(255, 255, 255, 0.07);
+  --c-glass-focus-color: #007aff;
 }
 
 // Dark
@@ -53,4 +83,19 @@ html[data-theme="dark"] {
 
   // 边框
   --c-border-color-rgb: 38, 43, 43;
+
+  // 玻璃
+  --c-glass-bg-rgb: 30, 30, 32;
+  --c-glass-bg-strength: 0.58;
+  --c-glass-svg-edge-strong: rgba(255, 255, 255, 0.08);
+  --c-glass-svg-edge-soft: rgba(255, 255, 255, 0.02);
+  --c-glass-shadow: rgba(0, 0, 0, 0.22);
+  --c-glass-fallback-bg: rgba(30, 30, 32, 0.24);
+  --c-glass-fallback-border: rgba(255, 255, 255, 0.04);
+  --c-glass-fallback-shadow-strong: rgba(0, 0, 0, 0.22);
+  --c-glass-fallback-shadow-soft: rgba(0, 0, 0, 0.14);
+  --c-glass-fallback-highlight: rgba(255, 255, 255, 0.05);
+  --c-glass-fallback-lowlight: rgba(255, 255, 255, 0.02);
+  --c-glass-fallback-overlay: rgba(255, 255, 255, 0.02);
+  --c-glass-focus-color: #0a84ff;
 }

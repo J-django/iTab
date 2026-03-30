@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { clsx } from "clsx";
 import "../style/index.less";
@@ -23,6 +23,18 @@ export const Image = (props: ImageProps) => {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
 
+  const handleLoad = useCallback(() => {
+    setIsImageLoaded(true);
+    setHasError(false);
+    onLoad?.();
+  }, [onLoad]);
+
+  const handleError = useCallback(() => {
+    setIsImageLoaded(false);
+    setHasError(true);
+    onError?.();
+  }, [onError]);
+
   useEffect(() => {
     if (!src) {
       handleError();
@@ -35,19 +47,7 @@ export const Image = (props: ImageProps) => {
     if (img && img.complete && img.naturalWidth > 0) {
       handleLoad();
     }
-  }, [src]);
-
-  const handleLoad = () => {
-    setIsImageLoaded(true);
-    setHasError(false);
-    onLoad?.();
-  };
-
-  const handleError = () => {
-    setIsImageLoaded(false);
-    setHasError(true);
-    onError?.();
-  };
+  }, [handleError, handleLoad, src]);
 
   return (
     <div

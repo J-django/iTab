@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useMemo } from "react";
+import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 
 import type { ReactNode, CSSProperties } from "react";
 
@@ -21,6 +21,7 @@ function AutoHeightTransition({
 }: AutoHeightTransitionProps) {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const innerRef = useRef<HTMLDivElement | null>(null);
+  const blurTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [height, setHeight] = useState<string>("auto");
   const [animating, setAnimating] = useState(false);
 
@@ -42,29 +43,39 @@ function AutoHeightTransition({
     };
   }, [animating, transitionDelay, enableBlur]);
 
-  const updateHeight = () => {
-    if (innerRef.current) {
-      if (enableBlur) {
-        setAnimating(true);
-        setTimeout(() => {
-          setAnimating(false);
-        }, transitionDelay);
-      }
-      setHeight(`${innerRef.current.clientHeight}px`);
+  const updateHeight = useCallback(() => {
+    if (!innerRef.current) {
+      return;
     }
-  };
+
+    if (enableBlur) {
+      if (blurTimerRef.current) {
+        clearTimeout(blurTimerRef.current);
+      }
+
+      setAnimating(true);
+      blurTimerRef.current = setTimeout(() => {
+        setAnimating(false);
+      }, transitionDelay);
+    }
+
+    setHeight(`${innerRef.current.clientHeight}px`);
+  }, [enableBlur, transitionDelay]);
 
   useEffect(() => {
     if (!innerRef.current) return;
-    const ro = new ResizeObserver(() => {
-      updateHeight();
-    });
+
+    updateHeight();
+    const ro = new ResizeObserver(updateHeight);
     ro.observe(innerRef.current);
 
     return () => {
       ro.disconnect();
+      if (blurTimerRef.current) {
+        clearTimeout(blurTimerRef.current);
+      }
     };
-  }, []);
+  }, [updateHeight]);
 
   return (
     <div ref={wrapperRef} style={wrapperStyle} className={className}>

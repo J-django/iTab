@@ -29,11 +29,9 @@ export const Modal = (props: ModalProps) => {
   useEffect(() => {
     if (visible) {
       onOpen?.();
-    } else {
-      onClose?.();
     }
     setIsFullScreen(false);
-  }, [visible]);
+  }, [visible, onOpen]);
 
   useEffect(() => {
     if (!visible || !keyboard) return;
