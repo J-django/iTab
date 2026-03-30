@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { cloneElement, useState, useMemo, useEffect } from "react";
 import Modal from "@/components/modal";
 import { motion } from "framer-motion";
 import { Scrollbars } from "react-custom-scrollbars-2";
@@ -12,6 +12,7 @@ import { clsx } from "clsx";
 
 import type { EditSearchEngineProps } from "../types";
 import type { SearchEngineItem } from "@/types";
+import type { MouseEvent } from "react";
 
 export const SettingSearchEngine = (props: EditSearchEngineProps) => {
   // Props
@@ -37,6 +38,25 @@ export const SettingSearchEngine = (props: EditSearchEngineProps) => {
     setCustomEngine("");
   }
 
+  function handleTriggerClick(event: MouseEvent<HTMLElement>) {
+    children.props.onClick?.(event);
+
+    if (event.defaultPrevented) {
+      return;
+    }
+
+    open();
+  }
+
+  function normalizeUrl(url: string) {
+    const trimmed = url.trim();
+    if (!trimmed) return "";
+    if (/^(https?:)?\/\//i.test(trimmed)) {
+      return trimmed;
+    }
+    return `https://${trimmed}`;
+  }
+
   function getSearchEngineIcon(key: SearchEngineItem["key"]) {
     return searchEngineIcons?.find((f) => f?.key === key)?.url;
   }
@@ -48,6 +68,17 @@ export const SettingSearchEngine = (props: EditSearchEngineProps) => {
     },
     [searchEngine?.list],
   );
+
+  useEffect(() => {
+    if (!visible) {
+      return;
+    }
+
+    const currentCustomEngine = searchEngine?.list?.find(
+      (item) => item.key === "custom",
+    );
+    setCustomEngine(currentCustomEngine?.url || "");
+  }, [searchEngine?.list, visible]);
 
   function handleToggle(engine: SearchEngineItem) {
     const count = orDefault(searchEngine?.list?.length, 0);
@@ -62,11 +93,13 @@ export const SettingSearchEngine = (props: EditSearchEngineProps) => {
   }
 
   function handleSave() {
-    if (customEngine) {
+    const nextCustomEngine = normalizeUrl(customEngine);
+
+    if (nextCustomEngine) {
       const customEngineObj = {
         key: "custom",
         title: "自定义",
-        url: customEngine,
+        url: nextCustomEngine,
       };
       setEngine(customEngineObj, true);
     } else {
@@ -77,9 +110,12 @@ export const SettingSearchEngine = (props: EditSearchEngineProps) => {
 
   return (
     <>
-      <div className="inline-flex items-center justify-center" onClick={open}>
-        {children}
-      </div>
+      {cloneElement(children, {
+        onClick: handleTriggerClick,
+        initial: children.props.initial ?? "hidden",
+        animate: children.props.animate ?? "show",
+        exit: children.props.exit ?? "hidden",
+      })}
 
       {/*弹窗*/}
       <Modal
@@ -94,7 +130,7 @@ export const SettingSearchEngine = (props: EditSearchEngineProps) => {
             <span className="text-3.75">添加搜索引擎</span>
             <span className="text-3 opacity-85">(最少保留一项)</span>
           </div>
-          <div className="w-full flex-auto overflow-hidden">
+          <div className="-mx-1 flex-auto">
             <Scrollbars
               width="100%"
               height="100%"
@@ -106,7 +142,7 @@ export const SettingSearchEngine = (props: EditSearchEngineProps) => {
                 />
               )}
             >
-              <div className="space-y-2 flex flex-col">
+              <div className="space-y-2 px-2 flex flex-col">
                 {/*搜索引擎列表*/}
                 <motion.ul
                   className="list-none m-0 px-1 py-0 w-full grid grid-cols-1 sm:grid-cols-2 gap-3"
@@ -160,6 +196,9 @@ export const SettingSearchEngine = (props: EditSearchEngineProps) => {
 
           {/*自定义*/}
           <div className="px-1 pt-2">
+            <div className="px-1 pb-2 text-[12px] text-[var(--c-text-color-45)]">
+              自定义 URL 支持直接拼接关键词，也支持用 `%s` 作为关键词占位符。
+            </div>
             <div className="space-x-3 pb-1 w-full flex items-center">
               <div className="relative flex-auto">
                 <input

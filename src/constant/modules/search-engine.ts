@@ -101,7 +101,7 @@ export const searchEngineRecord: SearchEngineItem[] = [
   {
     key: "naver",
     title: "NAVER",
-    url: "https://search.naver.com/search.naver?&query=312",
+    url: "https://search.naver.com/search.naver?&query=",
   },
   {
     key: "mdn",

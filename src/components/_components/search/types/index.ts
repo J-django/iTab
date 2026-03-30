@@ -1,4 +1,5 @@
 import type { RefObject } from "react";
+import type { SearchEngineItem } from "@/types";
 
 type GlobalType = {
   visible?: boolean;
@@ -22,4 +23,7 @@ export type ResultListProps = GlobalType & {
   offset?: number;
   list?: SearchResult[];
   selectedIndex?: number;
+  headerText?: string;
+  searchEngineUse?: SearchEngineItem["key"];
+  searchEngineList?: SearchEngineItem[];
 };
