@@ -1,2 +1,3 @@
 export { SettingNav } from "./src/setting-nav";
-export type { SettingNavProps } from "./types";
+export { NavForm } from "./src/nav-form";
+export type { SettingNavProps, NavDraft } from "./types";
