@@ -9,7 +9,10 @@ const Layout = () => {
 
   return (
     <div className="relative w-full h-full">
+      {/*Sidebar*/}
       <Sidebar />
+
+      {/*Main*/}
       <Main />
 
       {/*设置*/}
