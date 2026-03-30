@@ -7,3 +7,4 @@ export * from "./modules/eventbus";
 export * from "./modules/component";
 export * from "./modules/request";
 export * from "./modules/env";
+export * from "./modules/workspace";

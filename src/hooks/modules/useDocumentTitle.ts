@@ -11,7 +11,12 @@ export const useDocumentTitle = (routes: RouteObject[]) => {
     const matches = matchRoutes(routes, location);
     if (matches && matches.length > 0) {
       const { route } = matches[matches.length - 1];
-      document.title = `${defaultTitle} | ${route.handle?.title}`;
+      document.title = route.handle?.title
+        ? `${defaultTitle} | ${route.handle.title}`
+        : defaultTitle;
+      return;
     }
-  }, [location]);
+
+    document.title = defaultTitle;
+  }, [defaultTitle, location, routes]);
 };

@@ -50,6 +50,7 @@ export const defaultConfig: Config = {
   searchEngine: {
     show: true,
     use: "360",
+    history: [],
     list: [
       {
         key: "360",

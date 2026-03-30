@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { defaultConfig } from "@/constant";
+import { normalizeConfig } from "@/utils";
 
 import type {
   Config,
@@ -21,6 +22,7 @@ export const useConfigStore = create(
 
       // System
       resetConfig: () => set(defaultConfig),
+      replaceConfig: (config: Config) => set(normalizeConfig(config)),
 
       // Lang
       getLang: () => get()?.lang,
@@ -149,6 +151,65 @@ export const useConfigStore = create(
             ...localEngine,
             use: newUse,
             list: newEngineList,
+          },
+        });
+      },
+      setSearchHistory(history: SearchEngine["history"]) {
+        const localEngine = get()?.searchEngine;
+        if (!localEngine) return;
+
+        const nextHistory = Array.from(
+          new Set((history || []).map((item) => item?.trim()).filter(Boolean)),
+        ).slice(0, 12);
+
+        set({
+          searchEngine: {
+            ...localEngine,
+            history: nextHistory,
+          },
+        });
+      },
+      addSearchHistory(keyword: string) {
+        const value = keyword.trim();
+        if (!value) return;
+
+        const localEngine = get()?.searchEngine;
+        if (!localEngine) return;
+
+        const currentHistory = localEngine.history || [];
+        const nextHistory = [
+          value,
+          ...currentHistory.filter((item) => item !== value),
+        ].slice(0, 12);
+
+        set({
+          searchEngine: {
+            ...localEngine,
+            history: nextHistory,
+          },
+        });
+      },
+      removeSearchHistory(keyword: string) {
+        const localEngine = get()?.searchEngine;
+        if (!localEngine) return;
+
+        set({
+          searchEngine: {
+            ...localEngine,
+            history: (localEngine.history || []).filter(
+              (item) => item !== keyword,
+            ),
+          },
+        });
+      },
+      clearSearchHistory() {
+        const localEngine = get()?.searchEngine;
+        if (!localEngine) return;
+
+        set({
+          searchEngine: {
+            ...localEngine,
+            history: [],
           },
         });
       },

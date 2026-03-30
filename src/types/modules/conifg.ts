@@ -81,6 +81,7 @@ export type Config = {
 export type ConfigAction = {
   // System
   resetConfig: () => void;
+  replaceConfig: (config: Config) => void;
 
   // Lang
   getLang: () => Lang | undefined;
@@ -114,4 +115,8 @@ export type ConfigAction = {
   setEngineUse: (key: SearchEngineItem["key"]) => void;
   setEngine: (engine: SearchEngineItem, add?: boolean) => void;
   removeEngine: (key: SearchEngineItem["key"]) => void;
+  setSearchHistory: (history: SearchEngine["history"]) => void;
+  addSearchHistory: (keyword: string) => void;
+  removeSearchHistory: (keyword: string) => void;
+  clearSearchHistory: () => void;
 };
